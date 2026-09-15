@@ -43,7 +43,7 @@ fun FavoritesScreen(
     ) {
         Spacer(modifier = Modifier.height(24.dp))
 
-        // 1. Encabezado (Corazón + "Favoritos")
+        // Encabezado (Corazón + "Favoritos")
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -64,7 +64,7 @@ fun FavoritesScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // 2. Selector (Episodios / Series)
+        // Selector (Episodios / Series)
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -110,42 +110,33 @@ fun FavoritesScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // 3. Lista de Tarjetas
+        // 1. IMÁGENES DE LAS TARJETAS DE EPISODIOS
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            // NOTA: Cambia R.drawable.ic_launcher_background por las imágenes reales que tengas en res/drawable
-            FavoriteItemCard("La historia del señor Nimbus", "T3 - E5", "4.7")
-            FavoriteItemCard("El portal a la droga", "T1 - E3", "4.9")
-            FavoriteItemCard("Ricks en el espacio", "T4 - E8", "4.8")
-            FavoriteItemCard("La familia Rick", "T2 - E4", "4.6")
+            FavoriteItemCard("La historia del señor Nimbus", "T3 - E5", "4.7", R.drawable.historia)
+            FavoriteItemCard("El portal a la droga", "T1 - E3", "4.9", R.drawable.portal)
+            FavoriteItemCard("Ricks en el espacio", "T4 - E8", "4.8", R.drawable.quintamis)
+            FavoriteItemCard("La familia Rick", "T2 - E4", "4.6", R.drawable.familia)
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // 4. Ilustración del atardecer al final
-        Box(
+        // 2. ILUSTRACIÓN DEL ATARDECER (Banner Inferior)
+        // SOLUCIÓN: Quitamos el Box y el .height(160.dp). Ahora la imagen dicta su propia altura.
+        Image(
+            painter = painterResource(id = R.drawable.cuartamision),
+            contentDescription = "Atardecer Rick y Morty",
+            contentScale = ContentScale.FillWidth, // Llenará el ancho de la pantalla y ajustará su altura sin dejar huecos
             modifier = Modifier
                 .fillMaxWidth()
-                .height(160.dp)
                 .clip(RoundedCornerShape(16.dp))
-                .background(Color.Gray) // Fondo temporal mientras pones tu imagen
-        ) {
-            // Descomenta esto cuando tengas la imagen del atardecer en tu carpeta res/drawable
-            /*
-            Image(
-                painter = painterResource(id = R.drawable.tu_imagen_del_atardecer),
-                contentDescription = "Atardecer Rick y Morty",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
-            */
-        }
+        )
 
         Spacer(modifier = Modifier.height(32.dp)) // Espacio al final para que no quede pegado a la barra de navegación
     }
 }
 
 @Composable
-fun FavoriteItemCard(title: String, subtitle: String, rating: String) {
+fun FavoriteItemCard(title: String, subtitle: String, rating: String, imageRes: Int) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -153,26 +144,18 @@ fun FavoriteItemCard(title: String, subtitle: String, rating: String) {
             .clip(RoundedCornerShape(16.dp))
             .background(CardBgColor)
             .border(1.dp, CardBorderBlue, RoundedCornerShape(16.dp))
-            .padding(end = 8.dp), // Padding solo a la derecha, la imagen toca el borde izquierdo
+            .padding(end = 8.dp), // Padding solo a la derecha
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Imagen del episodio
-        Box(
+        Image(
+            painter = painterResource(id = imageRes),
+            contentDescription = title,
+            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxHeight()
                 .width(90.dp)
-                .background(Color.DarkGray) // Fondo temporal si no hay imagen
-        ) {
-            // Descomenta y pon tu imagen aquí
-            /*
-            Image(
-                painter = painterResource(id = R.drawable.imagen_episodio),
-                contentDescription = title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
-            */
-        }
+        )
 
         Spacer(modifier = Modifier.width(16.dp))
 

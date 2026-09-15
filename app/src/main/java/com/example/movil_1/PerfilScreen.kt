@@ -73,22 +73,16 @@ fun PerfilScreen(navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // Avatar circular con borde cian
-                Box(
+                // AQUÍ ESTÁ EL ÚNICO CAMBIO: Imagen del Avatar de Morty
+                Image(
+                    painter = painterResource(id = R.drawable.morty), // <-- PON TU IMAGEN AQUÍ
+                    contentDescription = "Morty Avatar",
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(100.dp)
                         .clip(CircleShape)
-                        .background(Color.DarkGray)
                         .border(3.dp, CyanBorder, CircleShape)
-                ) {
-                    // Descomenta esto cuando tengas la foto de Morty
-                    /*Image(
-                        painter = painterResource(id = R.drawable.tu_imagen_de_morty),
-                        contentDescription = "Morty Avatar",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
-                    )*/
-                }
+                )
 
                 Spacer(modifier = Modifier.width(16.dp))
 
@@ -171,10 +165,10 @@ fun PerfilScreen(navController: NavController) {
         ) {
             // Descomenta esto cuando tengas la imagen del portal inferior
             /*Image(
-                painter = painterResource(id = R.drawable.rick_portal_inferior),
-                contentDescription = "Rick en portal",
-                contentScale = ContentScale.FillWidth,
-                modifier = Modifier.fillMaxSize()
+            painter = painterResource(id = R.drawable.rick_portal_inferior),
+            contentDescription = "Rick en portal",
+            contentScale = ContentScale.FillWidth,
+            modifier = Modifier.fillMaxSize()
             )*/
         }
     }
