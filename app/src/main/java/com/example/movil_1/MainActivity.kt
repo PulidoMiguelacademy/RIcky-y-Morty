@@ -94,8 +94,8 @@ fun AppNavigation() {
 
             // 3. Explorar
             composable("explore") {
-                // Pasamos innerPadding como PaddingValues ya que ExploreScreen lo requiere por parámetro
-                ExploreScreen(paddingValues = innerPadding)
+                // Se añadieron las llamadas con navController y paddingValues que configuraste en ExploreScreen
+                ExploreScreen(navController = navController, paddingValues = innerPadding)
             }
 
             // 4. Favoritos
@@ -107,10 +107,9 @@ fun AppNavigation() {
             composable("perfil") {
                 PerfilScreen(navController = navController)
             }
-            }
         }
     }
-
+}
 
 @Composable
 fun CustomBottomNavigation(currentRoute: String?, onNavigate: (String) -> Unit) {

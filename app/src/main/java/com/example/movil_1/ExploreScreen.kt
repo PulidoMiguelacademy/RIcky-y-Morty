@@ -13,9 +13,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
 // Colores de la vista (NeonGreen ya está definido en MainScreen.kt)
 private val CardBorderBlue = Color(0xFF1E3A5F)
@@ -23,7 +26,10 @@ private val SearchBgColor = Color(0xFF0F1A2A)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExploreScreen(paddingValues: PaddingValues) {
+fun ExploreScreen(
+    navController: NavController,
+    paddingValues: PaddingValues = PaddingValues(0.dp)
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -101,12 +107,13 @@ fun ExploreScreen(paddingValues: PaddingValues) {
         }
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Lista vertical de episodios
+        // 1. IMÁGENES DE EPISODIOS
+        // Modificamos la llamada para pasarle la imagen de prueba a cada episodio
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            EpisodeItem("El portal a la droga", "T1 - E3", "4.9")
-            EpisodeItem("La historia del señor Nimbus", "T3 - E5", "4.7")
-            EpisodeItem("Ricks en el espacio", "T4 - E8", "4.8")
-            EpisodeItem("La familia Rick", "T2 - E4", "4.6")
+            EpisodeItem("El portal a la droga", "T1 - E3", "4.9", R.drawable.portal) // <-- Cambia la imagen aquí
+            EpisodeItem("La historia del señor Nimbus", "T3 - E5", "4.7", R.drawable.segundamision) // <-- Cambia la imagen aquí
+            EpisodeItem("Ricks en el espacio", "T4 - E8", "4.8", R.drawable.quintamis) // <-- Cambia la imagen aquí
+            EpisodeItem("La familia Rick", "T2 - E4", "4.6", R.drawable.familia) // <-- Cambia la imagen aquí
         }
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -121,14 +128,24 @@ fun ExploreScreen(paddingValues: PaddingValues) {
         }
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Lista horizontal de personajes
+        // 2. IMÁGENES DE PERSONAJES
+        // Creamos una lista con las imágenes de los personajes para que sea más fácil cambiarlas
+        val personajes = listOf(
+            R.drawable.rick, // <-- Cambia la imagen aquí (Personaje 1)
+            R.drawable.sumer, // <-- Cambia la imagen aquí (Personaje 2)
+            R.drawable.morty, // <-- Cambia la imagen aquí (Personaje 3)
+            R.drawable.beth  // <-- Cambia la imagen aquí (Personaje 4)
+        )
+
         LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            items(4) { index ->
-                Box(
+            items(personajes.size) { index ->
+                Image(
+                    painter = painterResource(id = personajes[index]),
+                    contentDescription = "Personaje",
+                    contentScale = ContentScale.Crop, // Ajusta la imagen al círculo sin deformarla
                     modifier = Modifier
                         .size(70.dp)
                         .clip(CircleShape)
-                        .background(Color.Gray) // Aquí irán tus R.drawable de personajes
                         .border(2.dp, if(index % 2 == 0) NeonGreen else Color(0xFF9C27B0), CircleShape)
                 )
             }
@@ -137,8 +154,9 @@ fun ExploreScreen(paddingValues: PaddingValues) {
     }
 }
 
+// Actualizamos esta función para que reciba la imagen (imageRes)
 @Composable
-fun EpisodeItem(title: String, season: String, rating: String) {
+fun EpisodeItem(title: String, season: String, rating: String, imageRes: Int) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -148,13 +166,16 @@ fun EpisodeItem(title: String, season: String, rating: String) {
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Imagen del episodio
-        Box(
+        // Imagen del episodio (Reemplazamos el Box por Image)
+        Image(
+            painter = painterResource(id = imageRes),
+            contentDescription = title,
+            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(width = 100.dp, height = 70.dp)
                 .clip(RoundedCornerShape(12.dp))
-                .background(Color.DarkGray) // Placeholder de la imagen
         )
+
         Spacer(modifier = Modifier.width(12.dp))
 
         // Información del episodio

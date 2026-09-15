@@ -59,7 +59,7 @@ fun TopHeader() {
 
             // 1. IMAGEN DEL AVATAR (Círculo superior derecho)
             Image(
-                painter = painterResource(id = R.drawable.ic_launcher_background), // <-- Cambia esto por tu imagen de Morty
+                painter = painterResource(id = R.drawable.avatar1),
                 contentDescription = "Perfil",
                 contentScale = ContentScale.Crop, // Esto hace que la imagen llene el círculo sin deformarse
                 modifier = Modifier
@@ -90,7 +90,7 @@ fun HeroBanner() {
     ) {
         // 2. IMAGEN DEL BANNER (El cuadro grande central)
         Image(
-            painter = painterResource(id = R.drawable.bg_portal_space), // <-- Cambia esto por tu imagen de banner
+            painter = painterResource(id = R.drawable.perimeramision),
             contentDescription = "Nuevos episodios",
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
@@ -119,11 +119,11 @@ fun TrendingList() {
     // 3. IMÁGENES DE LAS TARJETAS (Listas horizontales)
     // Creé una pequeña lista para que puedas poner nombres e imágenes diferentes a cada tarjeta.
     val episodios = listOf(
-        Pair("El show de Rick", R.drawable.ic_launcher_background), // <-- Cambia la imagen aquí
-        Pair("Aventura espacial", R.drawable.ic_launcher_background), // <-- Cambia la imagen aquí
-        Pair("Planeta Squanch", R.drawable.ic_launcher_background), // <-- Cambia la imagen aquí
-        Pair("Ciudadela", R.drawable.ic_launcher_background), // <-- Cambia la imagen aquí
-        Pair("Morty malvado", R.drawable.ic_launcher_background) // <-- Cambia la imagen aquí
+        Pair("El show de Rick", R.drawable.segundamision), // <-- Cambia la imagen aquí
+        Pair("Aventura espacial", R.drawable.terceramision), // <-- Cambia la imagen aquí
+        Pair("Planeta Squanch", R.drawable.cuartamision), // <-- Cambia la imagen aquí
+        Pair("Ciudadela", R.drawable.quintamis), // <-- Cambia la imagen aquí
+        Pair("Morty malvado", R.drawable.sextamiso) // <-- Cambia la imagen aquí
     )
 
     LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
