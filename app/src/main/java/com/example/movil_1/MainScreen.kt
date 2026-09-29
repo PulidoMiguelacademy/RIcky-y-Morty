@@ -27,6 +27,8 @@ val CardBackground = Color(0xFF1A222D)
 
 @Composable
 fun MainScreen(navController: NavHostController) {
+    var selectedEpisode by remember { mutableStateOf<Pair<String, Int>?>(null) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -35,58 +37,91 @@ fun MainScreen(navController: NavHostController) {
             .padding(horizontal = 16.dp)
     ) {
         Spacer(modifier = Modifier.height(16.dp))
-        TopHeader()
+        TopHeader(onAvatarClick = { navController.navigate("perfil") })
         Spacer(modifier = Modifier.height(24.dp))
         GreetingSection()
         Spacer(modifier = Modifier.height(16.dp))
-        HeroBanner()
+        HeroBanner(onVerAhoraClick = { navController.navigate("explore") })
         Spacer(modifier = Modifier.height(24.dp))
-        SectionHeader(title = "Tendencias", actionText = "Ver todo")
+        SectionHeader(
+            title = "Tendencias",
+            actionText = "Ver todo",
+            onActionClick = { navController.navigate("explore") }
+        )
         Spacer(modifier = Modifier.height(12.dp))
-        TrendingList()
+        TrendingList(onEpisodeClick = { episode -> selectedEpisode = episode })
         Spacer(modifier = Modifier.height(24.dp))
-        SectionHeader(title = "Colecciones", actionText = null)
-        TrendingList()
+        SectionHeader(
+            title = "Colecciones",
+            actionText = "Ver todo",
+            onActionClick = { navController.navigate("favorites") }
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+        TrendingList(onEpisodeClick = { episode -> selectedEpisode = episode })
         Spacer(modifier = Modifier.height(24.dp))
+    }
+
+    // Modal de Detalle al tocar cualquier tarjeta de la lista
+    selectedEpisode?.let { episode ->
+        MainEpisodeDetailDialog(
+            episode = episode,
+            onDismiss = { selectedEpisode = null },
+            onExplore = {
+                selectedEpisode = null
+                navController.navigate("explore")
+            }
+        )
     }
 }
 
 @Composable
-fun TopHeader() {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+fun TopHeader(onAvatarClick: () -> Unit = {}) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Text("Rick and Morty", color = NeonGreen, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
         Row(verticalAlignment = Alignment.CenterVertically) {
-
-            // 1. IMAGEN DEL AVATAR (Círculo superior derecho)
+            // 1. IMAGEN DEL AVATAR (Círculo superior derecho con clic hacia Perfil)
             Image(
                 painter = painterResource(id = R.drawable.avatar1),
-                contentDescription = "Perfil",
-                contentScale = ContentScale.Crop, // Esto hace que la imagen llene el círculo sin deformarse
+                contentDescription = "Ir al Perfil",
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .border(2.dp, Color.White, CircleShape)
+                    .border(2.dp, NeonGreen, CircleShape)
+                    .clickable { onAvatarClick() }
             )
 
             Spacer(modifier = Modifier.width(16.dp))
-            Icon(Icons.Default.Notifications, contentDescription = "Notificaciones", tint = Color.White)
+            Icon(
+                Icons.Default.Notifications,
+                contentDescription = "Notificaciones",
+                tint = Color.White
+            )
         }
     }
 }
 
 @Composable
 fun GreetingSection() {
-    Column { Text(text = "Hola, Morty", color = Color.White, fontSize = 28.sp, fontWeight = FontWeight.Bold); Text(text = "¿Listo para otra aventura?", color = Color.LightGray, fontSize = 16.sp) }
+    Column {
+        Text(text = "Hola, Morty", color = Color.White, fontSize = 28.sp, fontWeight = FontWeight.Bold)
+        Text(text = "¿Listo para otra aventura?", color = Color.LightGray, fontSize = 16.sp)
+    }
 }
 
 @Composable
-fun HeroBanner() {
+fun HeroBanner(onVerAhoraClick: () -> Unit = {}) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(200.dp)
             .clip(RoundedCornerShape(16.dp))
             .border(1.dp, NeonGreen, RoundedCornerShape(16.dp))
+            .clickable { onVerAhoraClick() }
     ) {
         // 2. IMAGEN DEL BANNER (El cuadro grande central)
         Image(
@@ -97,33 +132,66 @@ fun HeroBanner() {
         )
 
         // Este Box mantiene el gradiente oscuro para que el texto siga siendo legible
-        Box(modifier = Modifier.fillMaxSize().background(Brush.horizontalGradient(listOf(Color.Black.copy(alpha = 0.9f), Color.Transparent), startX = 0f, endX = 800f)))
-        Column(modifier = Modifier.fillMaxHeight().padding(16.dp).fillMaxWidth(0.6f), verticalArrangement = Arrangement.Center) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Brush.horizontalGradient(listOf(Color.Black.copy(alpha = 0.9f), Color.Transparent), startX = 0f, endX = 800f))
+        )
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(16.dp)
+                .fillMaxWidth(0.6f),
+            verticalArrangement = Arrangement.Center
+        ) {
             Text("Nuevos episodios\ndisponibles", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(12.dp))
-            Button(onClick = { }, colors = ButtonDefaults.buttonColors(containerColor = NeonGreen), shape = RoundedCornerShape(24.dp)) { Text("Ver ahora", color = Color.Black, fontWeight = FontWeight.Bold) }
+            Button(
+                onClick = onVerAhoraClick,
+                colors = ButtonDefaults.buttonColors(containerColor = NeonGreen),
+                shape = RoundedCornerShape(24.dp)
+            ) {
+                Text("Ver ahora", color = Color.Black, fontWeight = FontWeight.Bold)
+            }
         }
     }
 }
 
 @Composable
-fun SectionHeader(title: String, actionText: String?) {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+fun SectionHeader(
+    title: String,
+    actionText: String?,
+    onActionClick: (() -> Unit)? = null
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Text(text = title, color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-        if (actionText != null) Text(text = actionText, color = NeonGreen, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+        if (actionText != null) {
+            Text(
+                text = actionText,
+                color = NeonGreen,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .clickable { onActionClick?.invoke() }
+                    .padding(vertical = 4.dp, horizontal = 6.dp)
+            )
+        }
     }
 }
 
 @Composable
-fun TrendingList() {
-    // 3. IMÁGENES DE LAS TARJETAS (Listas horizontales)
-    // Creé una pequeña lista para que puedas poner nombres e imágenes diferentes a cada tarjeta.
+fun TrendingList(onEpisodeClick: (Pair<String, Int>) -> Unit = {}) {
     val episodios = listOf(
-        Pair("El show de Rick", R.drawable.segundamision), // <-- Cambia la imagen aquí
-        Pair("Aventura espacial", R.drawable.terceramision), // <-- Cambia la imagen aquí
-        Pair("Planeta Squanch", R.drawable.cuartamision), // <-- Cambia la imagen aquí
-        Pair("Ciudadela", R.drawable.quintamis), // <-- Cambia la imagen aquí
-        Pair("Morty malvado", R.drawable.sextamiso) // <-- Cambia la imagen aquí
+        Pair("El show de Rick", R.drawable.segundamision),
+        Pair("Aventura espacial", R.drawable.terceramision),
+        Pair("Planeta Squanch", R.drawable.cuartamision),
+        Pair("Ciudadela", R.drawable.quintamis),
+        Pair("Morty malvado", R.drawable.sextamiso)
     )
 
     LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -133,22 +201,121 @@ fun TrendingList() {
             Card(
                 colors = CardDefaults.cardColors(containerColor = CardBackground),
                 shape = RoundedCornerShape(16.dp),
-                modifier = Modifier.width(140.dp).height(180.dp).border(1.dp, Color(0xFF2A3441), RoundedCornerShape(16.dp))
+                modifier = Modifier
+                    .width(140.dp)
+                    .height(180.dp)
+                    .border(1.dp, Color(0xFF2A3441), RoundedCornerShape(16.dp))
+                    .clickable { onEpisodeClick(episodio) }
             ) {
                 Column {
-                    // Imagen de la tarjeta reemplazando el Box gris
                     Image(
-                        painter = painterResource(id = episodio.second), // Toma la imagen de la lista de arriba
+                        painter = painterResource(id = episodio.second),
                         contentDescription = episodio.first,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxWidth().height(100.dp)
                     )
 
                     Column(modifier = Modifier.padding(12.dp)) {
-                        Text(episodio.first, color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold, maxLines = 2)
+                        Text(
+                            episodio.first,
+                            color = Color.White,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1
+                        )
                         Spacer(modifier = Modifier.weight(1f))
-                        Text("⭐ 4.8", color = NeonGreen, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("⭐ 4.8", color = NeonGreen, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                            Text("Tocar para ver", color = Color.Gray, fontSize = 10.sp)
+                        }
                     }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun MainEpisodeDetailDialog(
+    episode: Pair<String, Int>,
+    onDismiss: () -> Unit,
+    onExplore: () -> Unit
+) {
+    androidx.compose.ui.window.Dialog(onDismissRequest = onDismiss) {
+        Card(
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(containerColor = CardBackground),
+            border = BorderStroke(1.5.dp, NeonGreen),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(id = episode.second),
+                    contentDescription = episode.first,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(150.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = episode.first,
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                Text(
+                    text = "⭐ Calificación: 4.8 / 5.0 • Temporada Destacada",
+                    color = NeonGreen,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Medium
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Text(
+                    text = "Acompaña a Rick y Morty en esta travesía intergaláctica llena de peligros, criaturas extrañas y portales multiversales.",
+                    color = Color.LightGray,
+                    fontSize = 13.sp,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Button(
+                    onClick = onExplore,
+                    colors = ButtonDefaults.buttonColors(containerColor = NeonGreen),
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Explorar en el catálogo", color = Color.Black, fontWeight = FontWeight.Bold)
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                OutlinedButton(
+                    onClick = onDismiss,
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Cerrar", color = Color.White)
                 }
             }
         }
