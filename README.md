@@ -1,4 +1,4 @@
-##Primera entrega
+## Primera entrega
 <img width="959" height="539" alt="image" src="https://github.com/user-attachments/assets/03e53787-30a3-45d6-95ea-4f18527a4ea6" />
 
 <img width="959" height="539" alt="image" src="https://github.com/user-attachments/assets/e9a96f21-fa28-4ead-a95c-39aa0f3e516a" />
@@ -18,7 +18,7 @@
 ------------------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------------------
 
-##Segunda entrega
+## Segunda entrega
 
 <img width="959" height="539" alt="image" src="https://github.com/user-attachments/assets/0aa96e29-0392-42b4-a39b-836e9b117d91" />
 
